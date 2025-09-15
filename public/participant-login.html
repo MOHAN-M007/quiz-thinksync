@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Participant Login</title><link rel="stylesheet" href="/style.css"></head><body>
+<div class="center-card">
+  <h2>Participant Login</h2>
+  <input id="email" placeholder="Email (gmail)" />
+  <input id="pw" placeholder="Phone number" />
+  <button id="loginBtn" class="btn">Login</button>
+  <p id="msg" style="color:#c00"></p>
+</div>
+<script>
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('pw').value.trim();
+  const res=await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
+  const j = await res.json();
+  if (j.success) { localStorage.setItem('quizUser', JSON.stringify({ email: j.email, username: j.username })); if(!j.username) window.location.href='/set-username.html'; else window.location.href='/quiz.html'; }
+  else document.getElementById('msg').innerText='Invalid credentials';
+});
+</script></body></html>

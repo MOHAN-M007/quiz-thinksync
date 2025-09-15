@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Admin Login</title><link rel="stylesheet" href="/style.css"></head><body>
+<div class="center-card">
+  <h2>Admin Login</h2>
+  <input id="id" placeholder="Admin ID" /><input id="pw" type="password" placeholder="Password" />
+  <button id="loginBtn" class="btn">Login</button>
+  <p id="msg" style="color:#c00"></p>
+</div>
+<script>
+document.getElementById('loginBtn').addEventListener('click', ()=>{
+  const id=document.getElementById('id').value.trim(); const pw=document.getElementById('pw').value.trim();
+  if (id==='mohan_m' && pw==='upload') { localStorage.setItem('adminUpload','true'); window.location.href='/admin-upload.html'; }
+  else if ((id==='gc' && pw==='2006') || (id==='harish' && pw==='2005') || (id==='jai' && pw==='2006')) { localStorage.setItem('adminView', id); window.location.href='/admin-dashboard.html'; }
+  else document.getElementById('msg').innerText='Access Denied';
+});
+</script></body></html>

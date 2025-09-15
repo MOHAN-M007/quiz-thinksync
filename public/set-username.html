@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Set Username</title><link rel="stylesheet" href="/style.css"></head><body>
+<div class="center-card">
+  <h2>Choose a Display Name</h2>
+  <input id="name" placeholder="Your display name" />
+  <button id="save" class="btn">Save & Continue</button>
+</div>
+<script>
+document.getElementById('save').addEventListener('click', async ()=>{
+  const name=document.getElementById('name').value.trim(); if(!name) return alert('Enter a name');
+  const u=JSON.parse(localStorage.getItem('quizUser')||'{}'); const email=u.email;
+  const res=await fetch('/api/set-username', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, username: name }) });
+  const j=await res.json(); if(j.success){ u.username=name; localStorage.setItem('quizUser', JSON.stringify(u)); window.location.href='/quiz.html'; } else alert('Error saving');
+});
+</script></body></html>

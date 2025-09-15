@@ -1,0 +1,44 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Admin Upload</title><link rel="stylesheet" href="/style.css"></head><body>
+<div class="center-card">
+  <h2>Upload Users (.xlsx)</h2>
+  <input id="usersFile" type="file" accept=".xlsx" />
+  <button id="uploadUsers" class="btn">Upload Users</button>
+  <p style="margin-top:12px">Template columns: email, password, username (optional)</p>
+  <hr/>
+  <h2>Upload Questions (.xlsx)</h2>
+  <input id="qFile" type="file" accept=".xlsx" />
+  <button id="uploadQs" class="btn">Upload Questions</button>
+  <p>Template columns: question, optionA, optionB, optionC, optionD, correct (0-3)</p>
+</div>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script>
+if (localStorage.getItem('adminUpload')!=='true'){ alert('Unauthorized'); window.location.href='/admin-login.html'; }
+function parseFileToJson(file, rowMapper){
+  return new Promise((res, rej)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      res(rows.map(rowMapper));
+    };
+    reader.onerror = rej;
+    reader.readAsArrayBuffer(file);
+  });
+}
+document.getElementById('uploadUsers').addEventListener('click', async ()=>{
+  const file = document.getElementById('usersFile').files[0];
+  if(!file) return alert('Choose file');
+  const rows = await parseFileToJson(file, r => ({ email: r.email||r.Gmail||r.Email, password: r.password||r.pw||r.phone, username: r.username||r.name||null }));
+  const res = await fetch('/api/upload-users', { method:'POST', headers:{ 'Content-Type':'application/json', 'Authorization': 'Basic ' + btoa('mohan_m:upload') }, body: JSON.stringify({ users: rows }) });
+  const j = await res.json(); alert(j.message || JSON.stringify(j));
+});
+document.getElementById('uploadQs').addEventListener('click', async ()=>{
+  const file = document.getElementById('qFile').files[0];
+  if(!file) return alert('Choose file');
+  const rows = await parseFileToJson(file, r => ({ question: r.question||r.Question, optionA: r.optionA||r.A, optionB: r.optionB||r.B, optionC: r.optionC||r.C, optionD: r.optionD||r.D, correct: r.correct }));
+  const res = await fetch('/api/upload-questions', { method:'POST', headers:{ 'Content-Type':'application/json', 'Authorization': 'Basic ' + btoa('mohan_m:upload') }, body: JSON.stringify({ questions: rows }) });
+  const j = await res.json(); alert(j.message || JSON.stringify(j));
+});
+</script></body></html>

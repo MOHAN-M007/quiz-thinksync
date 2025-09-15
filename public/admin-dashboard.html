@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Admin Dashboard</title><link rel="stylesheet" href="/style.css"></head><body>
+<div class="center-card">
+  <h2>Admin Dashboard</h2>
+  <div id="summary"></div>
+  <table id="table" border="1" style="width:100%;border-collapse:collapse;margin-top:12px">
+    <thead><tr><th>Rank</th><th>User</th><th>Email</th><th>Attempts</th><th>Best Score</th><th>Latest Score</th><th>Accuracy</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+<script>
+const admin = localStorage.getItem('adminView');
+if (!['gc','harish','jai'].includes(admin)){ alert('Unauthorized'); window.location.href='/admin-login.html'; }
+async function load(){
+  const res = await fetch('/api/admin-dashboard', { headers: { 'Authorization': 'Basic ' + btoa(admin + ':' + (admin==='harish' ? '2005' : '2006')) } });
+  const j = await res.json();
+  if (!j.success) return alert('No data or unauthorized');
+  const tbody = document.getElementById('tbody'); tbody.innerHTML='';
+  j.participants.forEach((p,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td>${p.username||'-'}</td><td>${p.email}</td><td>${p.attempts}</td><td>${p.bestScore}</td><td>${p.latestScore}</td><td>${p.accuracy}%</td>`;
+    tbody.appendChild(tr);
+  });
+}
+load();
+</script>
+</body></html>
