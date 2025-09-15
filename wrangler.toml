@@ -1,0 +1,14 @@
+name = "quiz-cloudflare-final"
+compatibility_date = "2025-09-15"
+
+[[kv_namespaces]]
+binding = "QUIZ_USERS"
+id = "REPLACE_WITH_YOUR_KV_ID_USERS"
+
+[[kv_namespaces]]
+binding = "QUIZ_QUESTIONS"
+id = "REPLACE_WITH_YOUR_KV_ID_QUESTIONS"
+
+[[kv_namespaces]]
+binding = "QUIZ_SUBMISSIONS"
+id = "REPLACE_WITH_YOUR_KV_ID_SUBMISSIONS"
